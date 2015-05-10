@@ -27,7 +27,7 @@ AC_ISC_POSIX
 dnl ------------------------------------------------------------------
 dnl Initialization for automake
 dnl ------------------------------------------------------------------
-AM_INIT_AUTOMAKE
+AM_INIT_AUTOMAKE([subdir-objects])
 AC_CONFIG_HEADERS(config.h)
 AM_MAINTAINER_MODE
 
