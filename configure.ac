@@ -4,7 +4,7 @@ dnl
 dnl Exported and configured variables:
 dnl CFLAGS
 dnl LDFLAGS
-dnl INCLUDES
+dnl AM_CPPFLAGS
 
 
 dnl ------------------------------------------------------------------
@@ -46,7 +46,7 @@ dnl Initialization for variables
 dnl ------------------------------------------------------------------
 CFLAGS="-std=c99 ${ac_save_CFLAGS}"
 LDFLAGS="${ac_save_LDFLAGS}"
-INCLUDES="-I\$(top_srcdir) -I\$(top_srcdir)/include -I\$(srcdir)"
+AM_CPPFLAGS="-I\$(top_srcdir) -I\$(top_srcdir)/include -I\$(srcdir)"
 
 
 dnl ------------------------------------------------------------------
@@ -128,7 +128,7 @@ AC_CHECK_LIB(m, rand)
 AC_ARG_WITH(
 	liblbfgs,
 	[AS_HELP_STRING([--with-liblbfgs=DIR],[liblbfgs directory])],
-	[INCLUDES="${INCLUDES} -I${withval}/include"; LDFLAGS="${LDFLAGS} -L${withval}/lib"]
+	[AM_CPPFLAGS="${AM_CPPFLAGS} -I${withval}/include"; LDFLAGS="${LDFLAGS} -L${withval}/lib"]
 )
 AC_CHECK_LIB(lbfgs, lbfgs)
 
@@ -137,7 +137,7 @@ dnl Export variables
 dnl ------------------------------------------------------------------
 AC_SUBST(CFLAGS)
 AC_SUBST(LDFLAGS)
-AC_SUBST(INCLUDES)
+AC_SUBST(AM_CPPFLAGS)
 AC_SUBST(includedir)
 AC_SUBST(libdir)
 
