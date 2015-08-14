@@ -52,6 +52,7 @@ typedef struct {
     int evaluate;
     int probability;
     int marginal;
+    int marginal_all;
     int quiet;
     int reference;
     int help;
@@ -112,6 +113,9 @@ BEGIN_OPTION_MAP(parse_tagger_options, tagger_option_t)
     ON_OPTION(SHORTOPT('i') || LONGOPT("marginal"))
         opt->marginal = 1;
 
+    ON_OPTION(SHORTOPT('l') || LONGOPT("marginal-all"))
+        opt->marginal_all = 1;
+
     ON_OPTION(SHORTOPT('q') || LONGOPT("quiet"))
         opt->quiet = 1;
 
@@ -165,17 +169,18 @@ output_result(
     const tagger_option_t* opt
     )
 {
-    int i;
+    int i, l;
+    floatval_t prob;
+    const char *label = NULL;
 
     if (opt->probability) {
         floatval_t lognorm;
         tagger->lognorm(tagger, &lognorm);
+	fprintf(fpo, "@score\t%f\t%f\n", score, lognorm);
         fprintf(fpo, "@probability\t%f\n", exp(score - lognorm));
     }
 
     for (i = 0;i < inst->num_items;++i) {
-        const char *label = NULL;
-
         if (opt->reference) {
             labels->to_string(labels, inst->labels[i], &label);
             fprintf(fpo, "%s\t", label);
@@ -187,9 +192,17 @@ output_result(
         labels->free(labels, label);
 
         if (opt->marginal) {
-            floatval_t prob;
             tagger->marginal_point(tagger, output[i], i, &prob);
             fprintf(fpo, ":%f", prob);
+        }
+
+        if (opt->marginal_all) {
+            for (l = 0;l < labels->num(labels);++l) {
+                tagger->marginal_point(tagger, l, i, &prob);
+                labels->to_string(labels, l, &label);
+                fprintf(fpo, "\t%s:%f", label, prob);
+                labels->free(labels, label);
+            }
         }
 
         fprintf(fpo, "\n");

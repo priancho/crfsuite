@@ -470,6 +470,7 @@ StringList Tagger::viterbi()
     }
 
     labels->release(labels);
+    delete[] path;
     return yseq;
 }
 
